@@ -18,7 +18,7 @@ export class StudentService {
 
   /** 1) Obtener todos los estudiantes de todos los clubs */
   getAllStudents(): Observable<Student[]> {
-    const clubs = ['Futbol', 'Volibol', 'Gymnacion'];
+    const clubs = ['Futbol', 'Volibol', 'Gimnasio'];
     const queries = clubs.map((club) =>
       collectionData(
         query(collection(this.firestore, club)),

@@ -3,6 +3,11 @@
         {{ studentToEdit ? 'Editar Estudiante' : 'Formulario de Registro' }}
     </h3>
 
+    <div *ngIf="showSuccessMessage" class="mb-4 p-3 bg-green-100 text-green-800 rounded">
+        ¡Registro exitoso!
+    </div>
+      
+
     <form (ngSubmit)="onSubmit()" class="space-y-4">
         <!-- Campo Club -->
         <div>

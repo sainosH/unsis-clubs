@@ -55,14 +55,14 @@
                         <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full" [ngClass]="{
                       'bg-green-100 text-green-800': student.club === 'Futbol',
                       'bg-blue-100 text-blue-800': student.club === 'Volibol',
-                      'bg-purple-100 text-purple-800': student.club === 'Gymnacion'
+                      'bg-purple-100 text-purple-800': student.club === 'Gimnasio'
                     }">
                             {{ student.club }}
                         </span>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <td class="px-6 py-4 whitespace-n   wrap text-sm font-medium">
                         <div class="flex space-x-2">
-                            <button (click)="editStudent.emit(student)"
+                            <button (click)="onEdit(student)"
                                 class="text-blue-600 hover:text-blue-900 px-2 py-1 rounded hover:bg-blue-50 transition-all">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
                                     fill="currentColor">

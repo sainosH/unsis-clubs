@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Student } from '../../models/student';
 import { StudentService } from '../../services/student.service';
+import { StudentEditService } from '../../services/student-edit.service';
 
 @Component({
   selector: 'app-student-form',
@@ -13,6 +14,7 @@ import { StudentService } from '../../services/student.service';
 })
 export class StudentFormComponent {
   @Input() clubs: string[] = ['Futbol', 'Volibol', 'Gimnasio'];
+  showSuccessMessage = false;
   @Input() studentToEdit: Student | null = null;
   @Output() studentSaved = new EventEmitter<void>();
 
@@ -25,11 +27,16 @@ export class StudentFormComponent {
     registrationDate: new Date().toISOString(),
   };
 
-  constructor(private studentService: StudentService) {}
+  constructor(
+    private studentService: StudentService,
+    private editService: StudentEditService
+  ) {}
 
   ngOnInit(): void {
+    this.studentToEdit = this.editService.get();
     if (this.studentToEdit) {
       this.student = { ...this.studentToEdit };
+      this.editService.clear();
     }
   }
 
@@ -45,6 +52,7 @@ export class StudentFormComponent {
 
       operation
         .then(() => {
+          this.showSuccessMessage = true;
           this.resetForm();
           this.studentSaved.emit();
         })

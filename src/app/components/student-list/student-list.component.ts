@@ -3,9 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
-
+import { Router } from '@angular/router';
 import { Student } from '../../models/student';
 import { StudentService } from '../../services/student.service';
+import { StudentEditService } from '../../services/student-edit.service'; 
 
 @Component({
   selector: 'app-student-list',
@@ -25,10 +26,17 @@ export class StudentListComponent implements OnInit {
   selectedClub = this.clubs[0].value;
   students: Student[] = [];
 
-  constructor(private studentService: StudentService) {}
+  constructor(private studentService: StudentService,
+    private editService: StudentEditService, 
+    private router: Router) {}
 
   ngOnInit(): void {
     this.loadStudents();
+  }
+
+  onEdit(student: Student): void {
+    this.editService.set(student);
+    this.router.navigate(['/registro']); // <- navegar al formulario
   }
 
   /** Filtrar por un solo club */
