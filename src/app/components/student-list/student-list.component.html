@@ -1,0 +1,36 @@
+<div class="list-container">
+    <h2>Lista de Estudiantes</h2>
+
+    <div class="club-selector">
+        <label>Seleccionar Club:</label>
+        <select [(ngModel)]="selectedClub" (change)="loadStudents()">
+            <option *ngFor="let club of clubs" [value]="club">{{club}}</option>
+        </select>
+        <button (click)="loadStudents()">Refrescar</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Matrícula</th>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let student of students">
+                <td>{{student.studentId}}</td>
+                <td>{{student.fullName}}</td>
+                <td>{{student.email}}</td>
+                <td>
+                    <button (click)="editStudent.emit(student)">Editar</button>
+                    <button (click)="onDelete(student)">Eliminar</button>
+                </td>
+            </tr>
+            <tr *ngIf="students.length === 0">
+                <td colspan="4">No hay estudiantes registrados</td>
+            </tr>
+        </tbody>
+    </table>
+    </div>

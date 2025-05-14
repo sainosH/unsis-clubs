@@ -1,0 +1,28 @@
+<div class="form-container">
+    <h2>{{ studentToEdit ? 'Editar Estudiante' : 'Registrar Estudiante' }}</h2>
+    <form (ngSubmit)="saveStudent()">
+        <div class="form-group">
+            <label>Club:</label>
+            <select [(ngModel)]="student.club" name="club" required>
+                <option *ngFor="let club of clubs" [value]="club">{{club}}</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Matrícula:</label>
+            <input type="text" [(ngModel)]="student.studentId" name="studentId" required>
+        </div>
+
+        <div class="form-group">
+            <label>Nombre Completo:</label>
+            <input type="text" [(ngModel)]="student.fullName" name="fullName" required>
+        </div>
+
+        <div class="form-group">
+            <label>Correo:</label>
+            <input type="email" [(ngModel)]="student.email" name="email" required>
+        </div>
+
+        <button type="submit">{{ studentToEdit ? 'Actualizar' : 'Guardar' }}</button>
+    </form>
+    </div>
