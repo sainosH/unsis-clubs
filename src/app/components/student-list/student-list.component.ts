@@ -1,8 +1,12 @@
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { forkJoin } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Router } from '@angular/router';
 import { Student } from '../../models/student';
 import { StudentService } from '../../services/student.service';
-import { FormsModule } from '@angular/forms';
+import { StudentEditService } from '../../services/student-edit.service'; 
 
 @Component({
   selector: 'app-student-list',
@@ -12,43 +16,64 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./student-list.component.scss'],
 })
 export class StudentListComponent implements OnInit {
-  @Input() clubs: string[] = ['Futbol', 'Volibol', 'Gymnacion'];
   @Output() editStudent = new EventEmitter<Student>();
 
-  selectedClub: string = this.clubs[0];
+  clubs = [
+    { value: 'Futbol', label: 'Futbol' },
+    { value: 'Volibol', label: 'Volibol' },
+    { value: 'Gimnasio', label: 'Gimnasio' },
+  ];
+  selectedClub = this.clubs[0].value;
   students: Student[] = [];
 
-  constructor(private studentService: StudentService) {}
+  constructor(private studentService: StudentService,
+    private editService: StudentEditService, 
+    private router: Router) {}
 
   ngOnInit(): void {
-    this.loadStudents(); // Carga inicial al crear el componente
+    this.loadStudents();
   }
 
-  onClubChange(): void {
-    this.loadStudents(); // Se ejecuta cuando cambia el club
+  onEdit(student: Student): void {
+    this.editService.set(student);
+    this.router.navigate(['/registro']); // <- navegar al formulario
   }
 
+  /** Filtrar por un solo club */
   loadStudents(): void {
-    console.log('Cargando estudiantes para:', this.selectedClub); // Debug
-
-    if (this.selectedClub) {
-      this.studentService.getStudents(this.selectedClub).subscribe({
-        next: (students) => {
-          console.log('Estudiantes recibidos:', students); // Debug
-          this.students = students;
-        },
-        error: (err) => {
-          console.error('Error al cargar estudiantes:', err);
-        },
-      });
-    }
+    console.log('Cargando club:', this.selectedClub);
+    this.studentService.getStudentsByClub(this.selectedClub).subscribe({
+      next: (students: Student[]) => (this.students = students),
+      error: (err: any) => {
+        console.error('Error cargando club:', err);
+        this.students = [];
+      },
+    });
   }
 
-  onDelete(student: Student): void {
-    if (confirm('¿Eliminar este estudiante?')) {
-      this.studentService.deleteStudent(student.club, student.id!).then(() => {
-        this.loadStudents(); // Recarga después de eliminar
+  /** Mostrar todos los estudiantes de todos los clubs */
+  loadAllStudents(): void {
+    this.studentService
+      .getAllStudents()
+      .pipe(map((list) => list.sort((a, b) => a.club.localeCompare(b.club))))
+      .subscribe({
+        next: (all: Student[]) => {
+          this.students = all;
+          this.selectedClub = ''; // opcional: limpiar filtro
+        },
+        error: (err: any) => {
+          console.error('Error cargando todos:', err);
+          this.students = [];
+        },
       });
-    }
+  }
+
+  /** Borrar estudiante */
+  onDelete(student: Student): void {
+    if (!confirm('¿Eliminar este estudiante?')) return;
+    this.studentService
+      .deleteStudent(student.club, student.id!)
+      .then(() => this.loadStudents())
+      .catch((err) => console.error('Error eliminando:', err));
   }
 }

@@ -2,14 +2,13 @@ import { Injectable } from '@angular/core';
 import {
   Firestore,
   collection,
-  addDoc,
   collectionData,
-  doc,
-  deleteDoc,
-  updateDoc,
+  query,
 } from '@angular/fire/firestore';
 import { Student } from '../models/student';
-import { Observable } from 'rxjs';
+import { Observable, combineLatest, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+import { addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 
 @Injectable({
   providedIn: 'root',
@@ -17,39 +16,85 @@ import { Observable } from 'rxjs';
 export class StudentService {
   constructor(private firestore: Firestore) {}
 
-  addStudent(student: Student) {
-    const clubRef = collection(this.firestore, student.club);
-    return addDoc(clubRef, {
-      ...student,
-      registrationDate: new Date().toISOString(),
-    });
+  /** 1) Obtener todos los estudiantes de todos los clubs */
+  getAllStudents(): Observable<Student[]> {
+    const clubs = ['Futbol', 'Volibol', 'Gimnasio'];
+    const queries = clubs.map((club) =>
+      collectionData(
+        query(collection(this.firestore, club)),
+        { idField: 'id' }
+      ) as Observable<Partial<Student>[]>
+    );
+
+    return combineLatest(queries).pipe(
+      map((results) => {
+        // results es Student[][], un array por cada club
+        return results.flatMap((studentsArray, idx) =>
+          studentsArray.map(d => ({
+            id: d.id!,
+            studentId: d.studentId!,
+            fullName: d.fullName!,
+            email: d.email!,
+            club: clubs[idx],
+            registrationDate: d.registrationDate!
+          } as Student))
+        );
+      }),
+      catchError((err) => {
+        console.error('Error al obtener todos los estudiantes:', err);
+        return of([]);
+      })
+    );
   }
 
-  getStudents(club: string): Observable<Student[]> {
+  /** 2) Obtener estudiantes de un solo club */
+  getStudentsByClub(club: string): Observable<Student[]> {
     const clubRef = collection(this.firestore, club);
-    return collectionData(clubRef, { idField: 'id' }) as Observable<Student[]>;
+    return collectionData(clubRef, { idField: 'id' }).pipe(
+      map(data =>
+        (data as Partial<Student>[]).map(d => ({
+          id: d.id!,
+          studentId: d.studentId!,
+          fullName: d.fullName!,
+          email: d.email!,
+          club: club,
+          registrationDate: d.registrationDate!
+        } as Student))
+      ),
+      catchError(err => {
+        console.error(`Error al obtener estudiantes de ${club}:`, err);
+        return of([]);
+      })
+    );
   }
 
-  deleteStudent(club: string, id: string) {
+  /** 3) Borrar estudiante */
+  deleteStudent(club: string, id: string): Promise<void> {
     const studentDoc = doc(this.firestore, `${club}/${id}`);
     return deleteDoc(studentDoc);
   }
 
-  updateStudent(club: string, id: string, student: Student) {
+  /** 4) Editar estudiante */
+  updateStudent(
+    club: string,
+    id: string,
+    student: Partial<Student>
+  ): Promise<void> {
     const studentDoc = doc(this.firestore, `${club}/${id}`);
-    return updateDoc(studentDoc, { ...student });
+    return updateDoc(studentDoc, student);
   }
 
-  registerStudent(clubName: string, student: Student): Promise<void> {
+  /** 5) Registrar estudiante */
+  registerStudent(
+    clubName: string,
+    student: Omit<Student, 'id'>
+  ): Promise<void> {
     const clubRef = collection(this.firestore, clubName);
     return addDoc(clubRef, {
-      studentId: student.studentId,
-      fullName: student.fullName,
-      email: student.email,
-      club: clubName,
+      ...student,
       registrationDate: new Date().toISOString(),
-    }).then((docRef) => {
-      console.log('Registrado con ID:', docRef.id);
+    }).then(docRef => {
+      console.log('Estudiante registrado con ID:', docRef.id);
     });
   }
 }
