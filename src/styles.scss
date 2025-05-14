@@ -1,3 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilos personalizados adicionales */
+body {
+    font-family: 'Inter', sans-serif;
+}
+/*
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -62,3 +71,5 @@ select {
     box-sizing: border-box;
     border: 1px solid #ddd;
     border-radius: 4px; }
+
+    */

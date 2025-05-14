@@ -1,28 +1,43 @@
-<div class="form-container">
-    <h2>{{ studentToEdit ? 'Editar Estudiante' : 'Registrar Estudiante' }}</h2>
-    <form (ngSubmit)="saveStudent()">
-        <div class="form-group">
-            <label>Club:</label>
-            <select [(ngModel)]="student.club" name="club" required>
-                <option *ngFor="let club of clubs" [value]="club">{{club}}</option>
+<div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
+    <h3 class="text-xl font-semibold mb-4 text-gray-800">
+        {{ studentToEdit ? 'Editar Estudiante' : 'Formulario de Registro' }}
+    </h3>
+
+    <form (ngSubmit)="onSubmit()" class="space-y-4">
+        <!-- Campo Club -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Club</label>
+            <select [(ngModel)]="student.club" name="club"
+                class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                <option *ngFor="let club of clubs" [value]="club">{{ club }}</option>
             </select>
         </div>
 
-        <div class="form-group">
-            <label>Matrícula:</label>
-            <input type="text" [(ngModel)]="student.studentId" name="studentId" required>
+        <!-- Campo Matrícula -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Matrícula</label>
+            <input type="text" [(ngModel)]="student.studentId" name="studentId" required
+                class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
         </div>
 
-        <div class="form-group">
-            <label>Nombre Completo:</label>
-            <input type="text" [(ngModel)]="student.fullName" name="fullName" required>
+        <!-- Campo Nombre Completo -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Nombre Completo</label>
+            <input type="text" [(ngModel)]="student.fullName" name="fullName" required
+                class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
         </div>
 
-        <div class="form-group">
-            <label>Correo:</label>
-            <input type="email" [(ngModel)]="student.email" name="email" required>
+        <!-- Campo Email -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
+            <input type="email" [(ngModel)]="student.email" name="email" required
+                class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
         </div>
 
-        <button type="submit">{{ studentToEdit ? 'Actualizar' : 'Guardar' }}</button>
+        <!-- Botón de Submit -->
+        <button type="submit" [disabled]="!student.studentId || !student.fullName || !student.email"
+            class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition disabled:bg-gray-400">
+            {{ studentToEdit ? 'Actualizar' : 'Registrar' }}
+        </button>
     </form>
     </div>
