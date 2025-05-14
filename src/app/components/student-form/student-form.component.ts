@@ -12,7 +12,7 @@ import { StudentService } from '../../services/student.service';
   styleUrls: ['./student-form.component.scss'],
 })
 export class StudentFormComponent {
-  @Input() clubs: string[] = ['Futbol', 'Volibol', 'Gymnacion'];
+  @Input() clubs: string[] = ['Futbol', 'Volibol', 'Gimnasio'];
   @Input() studentToEdit: Student | null = null;
   @Output() studentSaved = new EventEmitter<void>();
 
