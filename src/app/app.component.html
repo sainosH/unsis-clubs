@@ -1,29 +1,21 @@
-<div class="min-h-screen flex flex-col bg-gray-50">
+<div class="min-h-screen flex flex-col bg-teal-50">
   <!-- Navbar -->
-  <nav class="bg-blue-600 text-white shadow-lg">
+  <nav class="bg-teal-800 text-white shadow-lg">
     <div class="container mx-auto px-4 py-3 flex justify-between items-center">
       <h1 class="text-xl font-bold">UNSIS Clubs</h1>
       <div class="flex space-x-4">
-        <a 
-          routerLink="/registro" 
-          routerLinkActive="bg-blue-800"
-          class="hover:bg-blue-700 px-3 py-2 rounded transition">
+        <a routerLink="/registro" routerLinkActive="bg-teal-900" class="hover:bg-teal-700 px-3 py-2 rounded transition">
           Registro
         </a>
-        <a 
-          routerLink="/lista"
-          routerLinkActive="bg-blue-800" 
-          class="hover:bg-blue-700 px-3 py-2 rounded transition">
-          Lista todos los registros
+        <a routerLink="/lista" routerLinkActive="bg-teal-900" class="hover:bg-teal-700 px-3 py-2 rounded transition">
+          Listar todos los registros
         </a>
-        
-
       </div>
     </div>
   </nav>
 
   <!-- Header -->
-  <header class="bg-blue-500 text-white py-8 text-center shadow-md">
+  <header class="bg-teal-600 text-white py-8 text-center shadow-md">
     <h2 class="text-3xl font-bold">{{ currentTitle }}</h2>
   </header>
 
@@ -33,7 +25,7 @@
   </main>
 
   <!-- Footer -->
-  <footer class="bg-gray-800 text-white py-4 text-center">
+  <footer class="bg-teal-900 text-white py-4 text-center">
     <p>© {{ year }} UNSIS Clubs - Todos los derechos reservados</p>
   </footer>
 </div>
