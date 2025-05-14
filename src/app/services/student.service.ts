@@ -39,4 +39,17 @@ export class StudentService {
     const studentDoc = doc(this.firestore, `${club}/${id}`);
     return updateDoc(studentDoc, { ...student });
   }
+
+  registerStudent(clubName: string, student: Student): Promise<void> {
+    const clubRef = collection(this.firestore, clubName);
+    return addDoc(clubRef, {
+      studentId: student.studentId,
+      fullName: student.fullName,
+      email: student.email,
+      club: clubName,
+      registrationDate: new Date().toISOString(),
+    }).then((docRef) => {
+      console.log('Registrado con ID:', docRef.id);
+    });
+  }
 }

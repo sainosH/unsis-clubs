@@ -1,29 +1,23 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { StudentFormComponent } from './components/student-form/student-form.component';
-import { StudentListComponent } from './components/student-list/student-list.component';
-import { Student } from './models/student';
+import { Router, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [
-    CommonModule,
-    StudentFormComponent,
-    StudentListComponent,
-  ],
+  imports: [RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  styleUrls: ['./app.component.scss'] 
 })
 export class AppComponent {
-  title = 'unsis-clubs';
-  studentToEdit: Student | null = null;
+  currentTitle = 'Registro de Estudiantes';
+  year = new Date().getFullYear();
 
-  handleEdit(student: Student) {
-    this.studentToEdit = student;
-  }
-
-  clearEdit() {
-    this.studentToEdit = null;
+  constructor(public router: Router) {
+    this.router.events.subscribe(() => {
+      this.currentTitle =
+        this.router.url === '/registro'
+          ? 'Registro de Estudiantes'
+          : 'Lista de Registros';
+    });
   }
 }

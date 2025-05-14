@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { Student } from '../../models/student';
 import { StudentService } from '../../services/student.service';
 
-
 @Component({
   selector: 'app-student-form',
   standalone: true,
@@ -17,38 +16,61 @@ export class StudentFormComponent {
   @Input() studentToEdit: Student | null = null;
   @Output() studentSaved = new EventEmitter<void>();
 
+  // Objeto estudiante con todos los campos inicializados
   student: Student = {
     studentId: '',
     fullName: '',
     email: '',
-    club: this.clubs[0],
+    club: this.clubs[0], // Valor por defecto
+    registrationDate: new Date().toISOString(),
   };
 
   constructor(private studentService: StudentService) {}
 
-  ngOnChanges() {
+  ngOnInit(): void {
     if (this.studentToEdit) {
       this.student = { ...this.studentToEdit };
     }
   }
 
-  saveStudent() {
-    const operation = this.studentToEdit
-      ? this.studentService.updateStudent(
-          this.student.club,
-          this.student.id!,
-          this.student
-        )
-      : this.studentService.addStudent(this.student);
+  onSubmit(): void {
+    if (this.isFormValid()) {
+      const operation = this.studentToEdit
+        ? this.studentService.updateStudent(
+            this.student.club,
+            this.student.id!,
+            this.student
+          )
+        : this.studentService.registerStudent(this.student.club, this.student);
 
-    operation.then(() => {
-      this.student = {
-        studentId: '',
-        fullName: '',
-        email: '',
-        club: this.clubs[0],
-      };
-      this.studentSaved.emit();
-    });
+      operation
+        .then(() => {
+          this.resetForm();
+          this.studentSaved.emit();
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+    }
+  }
+
+  private isFormValid(): boolean {
+    return (
+      !!this.student.studentId &&
+      !!this.student.fullName &&
+      !!this.student.email &&
+      !!this.student.club
+    );
+  }
+
+  private resetForm(): void {
+    this.student = {
+      studentId: '',
+      fullName: '',
+      email: '',
+      club: this.clubs[0],
+      registrationDate: new Date().toISOString(),
+    };
+    this.studentToEdit = null;
   }
 }
