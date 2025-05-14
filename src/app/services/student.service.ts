@@ -94,7 +94,6 @@ export class StudentService {
       ...student,
       registrationDate: new Date().toISOString(),
     }).then(docRef => {
-      console.log('Estudiante registrado con ID:', docRef.id);
     });
   }
 }

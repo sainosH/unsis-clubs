@@ -41,11 +41,9 @@ export class StudentListComponent implements OnInit {
 
   /** Filtrar por un solo club */
   loadStudents(): void {
-    console.log('Cargando club:', this.selectedClub);
     this.studentService.getStudentsByClub(this.selectedClub).subscribe({
       next: (students: Student[]) => (this.students = students),
       error: (err: any) => {
-        console.error('Error cargando club:', err);
         this.students = [];
       },
     });
@@ -62,7 +60,6 @@ export class StudentListComponent implements OnInit {
           this.selectedClub = ''; // opcional: limpiar filtro
         },
         error: (err: any) => {
-          console.error('Error cargando todos:', err);
           this.students = [];
         },
       });
@@ -74,6 +71,5 @@ export class StudentListComponent implements OnInit {
     this.studentService
       .deleteStudent(student.club, student.id!)
       .then(() => this.loadStudents())
-      .catch((err) => console.error('Error eliminando:', err));
   }
 }
